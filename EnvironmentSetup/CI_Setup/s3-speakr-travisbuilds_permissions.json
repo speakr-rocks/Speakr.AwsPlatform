@@ -1,0 +1,15 @@
+{
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::627324970999:user/Travis-CI"
+            },
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::speakr-travisbuilds/*"
+        }
+    ]
+}

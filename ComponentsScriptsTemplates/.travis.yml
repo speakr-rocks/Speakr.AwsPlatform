@@ -1,0 +1,43 @@
+language: generic
+
+sudo: required
+dist: trusty
+
+install:
+# Install .net using linux CLI commands
+  - sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list' 
+  - sudo apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
+  - sudo apt-get update
+  - sudo apt-get install -qq dotnet-dev-1.0.0-preview2-003121
+
+script:
+  - dotnet restore
+  - dotnet build src/Speakr.WebApp.Site
+  - dotnet build tests/Speakr.WebApp.Site.Tests
+  - dotnet test tests/Speakr.WebApp.Site.Tests -f netcoreapp1.0
+
+before_deploy:
+  - zip -r $(date +'WebApp-%F').zip *
+  - mkdir -p CodeDeploy_Artifacts
+  - mv $(date +'WebApp-%F').zip CodeDeploy_Artifacts/$(date +'WebApp-%F').zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    region: eu-west-1
+    bucket: speakr-travisbuilds
+    local_dir: CodeDeploy_Artifacts
+    skip_cleanup: true
+    upload-dir: WebApp
+    on: &2
+        branch: production
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    region: eu-west-1
+    bucket: speakr-travisbuilds
+    key: WebApp/$(date +'WebApp-%F').zip
+    application: speakr-webapp-codedeploy
+    deployment_group: speakr-webapp-codedeploy-Fleet
+    on: *2
