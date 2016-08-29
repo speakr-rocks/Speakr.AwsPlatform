@@ -5,6 +5,7 @@ $directory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Create EC2 SSH key-pair
 aws ec2 create-key-pair --key-name speakr.keypair > $directory/ec2_keypair.txt
+aws s3 cp ec2_keypair.txt s3://speakr-keypairs
 
 # Create Route53 Hosted Zone
 aws route53 create-hosted-zone --name speakr.rocks --caller-reference speakr.rocks_01 > $directory/hosted_zone_info.json

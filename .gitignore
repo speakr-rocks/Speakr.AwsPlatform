@@ -1,0 +1,2 @@
+# Never save keypair keys to Git for security
+ec2_keypair.txt
