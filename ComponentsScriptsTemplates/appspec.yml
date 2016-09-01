@@ -5,8 +5,8 @@ files:
     destination: C:\Speakr.WebApp
 hooks:
   ApplicationStop:
-    - location: .\RemoveApp.ps1
+    - location: .\Remove-App.ps1
       timeout: 30
   ApplicationStart:
-    - location: .\InstallApp.ps1
+    - location: .\Install-App.ps1
       timeout: 300

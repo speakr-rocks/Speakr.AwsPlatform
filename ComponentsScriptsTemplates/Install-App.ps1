@@ -1,4 +1,4 @@
-﻿sl C:\Speakr.WebApp\src\Speakr.WebApp.Site
+﻿cd C:\Speakr.WebApp\src\Speakr.WebApp.Site
 
 # Restore the nuget references
 & "C:\Program Files\dotnet\dotnet.exe" restore
