@@ -13,6 +13,6 @@ aws route53 create-hosted-zone --name speakr.rocks --caller-reference speakr.roc
 $HostedZoneId = (Get-Content "$directory/hosted_zone_info.json" -Raw) | ConvertFrom-Json
 
 # Boot up services stacks
-# TODO: Call another script that loops through Components and runs the scripts there 
+& "$directory/aws_setup_all_stacks.ps1"
 
 Write-Host "Please manually copy AWS Key and AWS Secret for TravisCI to your TravisCI environment"
