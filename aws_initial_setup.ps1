@@ -1,7 +1,7 @@
 $directory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Create CI resources (IAM, S3, Policies)
-& "$directory/EnvironmentSetup/CI_Setup/setup_travisagent_resources.sh"
+& "$directory/EnvironmentSetup/ci_setup/setup_travisagent_resources.sh"
 
 # Create EC2 SSH key-pair
 aws ec2 create-key-pair --key-name speakr.keypair > $directory/ec2_keypair.txt
