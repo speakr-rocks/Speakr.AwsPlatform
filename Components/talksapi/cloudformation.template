@@ -88,25 +88,13 @@
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "The security group for the application servers",
+                "Tags" : [{
+                    "Key" : "SecurityGroupIdentifier",
+                    "Value" : "ec2-speakr-rocks"
+                }],
                 "SecurityGroupIngress" : [
-                    {
-                        "CidrIp" : "0.0.0.0/0",
-                        "IpProtocol" : "tcp",
-                        "FromPort"   : "80",
-                        "ToPort"     : "80"
-                    },
-                    {
-                        "CidrIp" : {
-                            "Fn::If" : [
-                                "OpenRemoteDesktopPortCondition",
-                                "0.0.0.0/0",
-                                "0.0.0.0/32"
-                            ]
-                        },
-                        "IpProtocol" : "tcp",
-                        "FromPort"   : "3389",
-                        "ToPort"     : "3389"
-                    }
+                    {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
+                    {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0"}
                 ]
             }
         },
@@ -224,18 +212,13 @@
                 "KeyName"            : {
                     "Ref" : "EC2KeyName"
                 },
-                "SecurityGroups"     : {
+                "SecurityGroups" : [{
                     "Fn::If" : [
                         "HasDbAccess",
-                        [
-                            { "Ref" : "WebServerSecurity" },
-                            { "Ref" : "EC2toDBSecurityGroup" }
-                        ],
-                        [
-                            { "Ref" : "WebServerSecurity" }
-                        ]
+                        {"Ref" : "EC2toDBSecurityGroup"},
+                        {"Ref" : "WebServerSecurity"}
                     ]
-                },
+                }],
                 "Tags"               : [
                     {
                         "Key" : "Name",
