@@ -19,7 +19,7 @@
         },
         "OpenRemoteDesktopPort" : {
             "Type" : "String",
-            "Description" : "If set to Yes the RDP port will be open. This is useful for debugging but for security reason should not be done for production systems.",
+            "Description" : "If set to Yes the RDP port will be open.",
             "AllowedValues" : [
                 "Yes",
                 "No"
@@ -51,7 +51,7 @@
             "Description": "Security Group Name for DB Access",
             "Default": ""
         }
-	},
+    },
     "Conditions"               : {
         "OpenRemoteDesktopPortCondition" : {
             "Fn::Equals" : [

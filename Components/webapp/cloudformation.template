@@ -19,7 +19,7 @@
         },
         "OpenRemoteDesktopPort" : {
             "Type" : "String",
-            "Description" : "If set to Yes the RDP port will be open. This is useful for debugging but for security reason should not be done for production systems.",
+            "Description" : "If set to Yes the RDP port will be open.",
             "AllowedValues" : [
                 "Yes",
                 "No"
@@ -33,43 +33,44 @@
             "Type" : "String",
             "Description" : "The DNS Id of an existing Amazon Route 53 hosted zone",
             "Default": "Z34EV4LHVRJO57"
-        },      
-        "Route53DNSName" : {        
-            "Type" : "String",      
-            "Description" : "public url/DNS value for this component"       
-        },      
-        "ShouldHaveAccessToDb" : {      
-            "Type" : "String",      
-            "Description" : "If set to Yes DB security group will be added to stack",       
-            "AllowedValues" : [     
-                "Yes",      
-                "No"        
-            ]       
-        },      
-        "EC2toDBSecurityGroup": {       
-            "Type": "String",       
-            "Description": "Security Group Name for DB Access",        
+        },
+        "Route53DNSName" : {
+            "Type" : "String",
+            "Description" : "public url/DNS value for this component"
+        },
+        "ShouldHaveAccessToDb" : {
+            "Type" : "String",
+            "Description" : "If set to Yes DB security group will be added to stack",
+            "AllowedValues" : [
+                "Yes",
+                "No"
+            ]
+        },
+        "EC2toDBSecurityGroup": {
+            "Type": "String",
+            "Description": "Security Group Name for DB Access",
             "Default": ""
-	},
+        }
+    },
     "Conditions"               : {
         "OpenRemoteDesktopPortCondition" : {
             "Fn::Equals" : [
                 "Yes",
                 {
                     "Ref" : "OpenRemoteDesktopPort"
-                }       
-            ]       
-        },      
-        "HasDbAccess" : {      
-            "Fn::Equals" : [        
-                "Yes",      
-                {       
+                }
+            ]
+        },
+        "HasDbAccess" : {
+            "Fn::Equals" : [
+                "Yes",
+                {
                     "Ref": "ShouldHaveAccessToDb"
                 }
             ]
         }
     },
-	"Resources" : {
+    "Resources" : {
        "WaitHandle" : {
             "Type" : "AWS::CloudFormation::WaitConditionHandle"
         },
@@ -404,5 +405,4 @@
             "Value": { "Ref": "WebServerSetDnsRecord" }
         }
 	}
-}
 }
