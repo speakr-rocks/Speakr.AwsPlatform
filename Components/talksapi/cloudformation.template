@@ -48,7 +48,7 @@
         },
         "EC2toDBSecurityGroup": {
             "Type": "String",
-            "Description": "Needed to ",
+            "Description": "Security Group Name for DB Access",
             "Default": ""
         }
 	},
@@ -228,17 +228,11 @@
                     "Fn::If" : [
                         "HasDbAccess",
                         [
-                            {
-                                "Ref" : "WebServerSecurity"
-                            },
-                            {
-                                "Ref" : "WebServerSecurity"
-                            },
+                            { "Ref" : "WebServerSecurity" },
+                            { "Ref" : "EC2toDBSecurityGroup" }
                         ],
                         [
-                            {
-                                "Ref" : "WebServerSecurity"
-                            },                        
+                            { "Ref" : "WebServerSecurity" }
                         ]
                     ]
                 },
