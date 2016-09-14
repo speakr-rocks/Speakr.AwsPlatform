@@ -180,8 +180,9 @@ function ProcessInput([string]$instanceType,[string]$keyPair,[bool]$openRDPPort)
 
 function _GetDbSecurityGroupName
 {
-    return (Get-EC2SecurityGroup -Region eu-west-1) | ? {$_.Tag.Key -eq $ec2ToDbSecurityGroupTagKey -and $_.Tag.Value -eq $ec2ToDbSecurityGroupTagValue} | Select GroupName
+    $secGroupName = (Get-EC2SecurityGroup -Region eu-west-1) | ? {$_.Tag.Key -eq $ec2ToDbSecurityGroupTagKey -and $_.Tag.Value -eq $ec2ToDbSecurityGroupTagValue} | Select GroupName
+    Write-Host "RDS Sec Group Name: " $secGroupName
+    return $secGroupName
 }
-
 
 ProcessInput $instanceType $ec2KeyPair $openRDPPort
