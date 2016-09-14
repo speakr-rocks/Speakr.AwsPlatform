@@ -1,7 +1,7 @@
 {
 	"AWSTemplateFormatVersion" : "2010-09-09",
 
-	"Description" : "",
+	"Description" : "Creates Stack for WebApp",
 
 	"Parameters" : {
         "ImageId" : {
@@ -33,7 +33,23 @@
             "Type" : "String",
             "Description" : "The DNS Id of an existing Amazon Route 53 hosted zone",
             "Default": "Z34EV4LHVRJO57"
-        }
+        },      
+        "Route53DNSName" : {        
+            "Type" : "String",      
+            "Description" : "public url/DNS value for this component"       
+        },      
+        "ShouldHaveAccessToDb" : {      
+            "Type" : "String",      
+            "Description" : "If set to Yes DB security group will be added to stack",       
+            "AllowedValues" : [     
+                "Yes",      
+                "No"        
+            ]       
+        },      
+        "EC2toDBSecurityGroup": {       
+            "Type": "String",       
+            "Description": "Needed to ",        
+            "Default": ""
 	},
     "Conditions"               : {
         "OpenRemoteDesktopPortCondition" : {
@@ -41,6 +57,14 @@
                 "Yes",
                 {
                     "Ref" : "OpenRemoteDesktopPort"
+                }       
+            ]       
+        },      
+        "HasDbAccess" : {      
+            "Fn::Equals" : [        
+                "Yes",      
+                {       
+                    "Ref": "ShouldHaveAccessToDb"
                 }
             ]
         }
@@ -199,11 +223,24 @@
                 "KeyName"            : {
                     "Ref" : "EC2KeyName"
                 },
-                "SecurityGroups"     : [
-                    {
-                        "Ref" : "WebServerSecurity"
-                    }
-                ],
+                "SecurityGroups"     : {
+                    "Fn::If" : [
+                        "HasDbAccess",
+                        [
+                            {
+                                "Ref" : "WebServerSecurity"
+                            },
+                            {
+                                "Ref" : "WebServerSecurity"
+                            },
+                        ],
+                        [
+                            {
+                                "Ref" : "WebServerSecurity"
+                            },                        
+                        ]
+                    ]
+                },
                 "Tags"               : [
                     {
                         "Key" : "Name",
@@ -238,7 +275,7 @@
             "Type" : "AWS::Route53::RecordSet",
             "Properties" : {
                 "HostedZoneId" : {"Ref" : "HostedZoneId"},
-                "Name" : "www.speakr.rocks.",
+                "Name" : {"Ref" : "Route53DNSName"},
                 "Comment" : "DNS name for the EC2 instance",
                 "Type" : "A",
                 "TTL" : "900",

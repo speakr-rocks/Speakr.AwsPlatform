@@ -1,6 +1,7 @@
 $directory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Create database (MySQL RDS)
-& "$directory/EnvironmentSetup/database_setup/rds_setup.ps1" > $databasePassword
-
-Write-Host "Please manually copy the following password to your TravisCI Environment: Database password: " $databasePassword
+"Username: dbadmin`n" > $directory/db_password.txt
+& "$directory/EnvironmentSetup/database_setup/rds_setup.ps1" >> $directory/db_password.txt
+aws s3 cp db_password.txt s3://speakr-keypairs
+Write-Host "DB Password saved to s3"

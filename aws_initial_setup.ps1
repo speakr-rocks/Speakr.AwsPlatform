@@ -12,6 +12,10 @@ Write-Host "EC2 KeyPair saved to s3"
 aws route53 create-hosted-zone --name speakr.rocks --caller-reference speakr.rocks_01 > $directory/hosted_zone_info.json
 $HostedZoneId = (Get-Content "$directory/hosted_zone_info.json" -Raw) | ConvertFrom-Json
 
+# Create RDS Databases
+
+
+
 # Boot up services stacks
 & "$directory/aws_setup_all_stacks.ps1"
 

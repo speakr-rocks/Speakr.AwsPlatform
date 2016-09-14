@@ -37,6 +37,19 @@
         "Route53DNSName" : {
             "Type" : "String",
             "Description" : "public url/DNS value for this component"
+        },
+        "ShouldHaveAccessToDb" : {
+            "Type" : "String",
+            "Description" : "If set to Yes DB security group will be added to stack",
+            "AllowedValues" : [
+                "Yes",
+                "No"
+            ]
+        },
+        "EC2toDBSecurityGroup": {
+            "Type": "String",
+            "Description": "Needed to ",
+            "Default": ""
         }
 	},
     "Conditions"               : {
@@ -45,6 +58,14 @@
                 "Yes",
                 {
                     "Ref" : "OpenRemoteDesktopPort"
+                }
+            ]
+        },
+        "HasDbAccess" : {
+            "Fn::Equals" : [
+                "Yes",
+                {
+                    "Ref": "ShouldHaveAccessToDb"
                 }
             ]
         }
@@ -203,11 +224,24 @@
                 "KeyName"            : {
                     "Ref" : "EC2KeyName"
                 },
-                "SecurityGroups"     : [
-                    {
-                        "Ref" : "WebServerSecurity"
-                    }
-                ],
+                "SecurityGroups"     : {
+                    "Fn::If" : [
+                        "HasDbAccess",
+                        [
+                            {
+                                "Ref" : "WebServerSecurity"
+                            },
+                            {
+                                "Ref" : "WebServerSecurity"
+                            },
+                        ],
+                        [
+                            {
+                                "Ref" : "WebServerSecurity"
+                            },                        
+                        ]
+                    ]
+                },
                 "Tags"               : [
                     {
                         "Key" : "Name",

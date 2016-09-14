@@ -31,9 +31,10 @@ function _CreateCloudformation
     $MasterUserPassword.ParameterValue = $databasePassword
 
 
-    New-CFNStack -StackName "db-speakr-rocks" -Capability "CAPABILITY_IAM" -Parameter $MasterUserPassword -TemplateBody $templateBody -Region "eu-west-1" 
+    $deploymentGroupId = New-CFNStack -StackName "db-speakr-rocks" -Capability "CAPABILITY_IAM" -Parameter $MasterUserPassword -TemplateBody $templateBody -Region "eu-west-1" 
 
-    return $databasePassword
+    $returnPassword = ("Password: " + $databasePassword)
+    return $returnPassword
 }
 
 _CreateCloudFormation
