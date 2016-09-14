@@ -1,6 +1,7 @@
 # Never save keypair keys to Git for security
 ec2_keypair.txt
-
+ec2_keypair.pem
+db_password.txt
 
 # Created by https://www.gitignore.io/api/sublim,sublimetext
 

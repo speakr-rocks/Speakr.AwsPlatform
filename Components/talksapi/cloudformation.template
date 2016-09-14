@@ -1,7 +1,7 @@
 {
 	"AWSTemplateFormatVersion" : "2010-09-09",
 
-	"Description" : "",
+	"Description" : "Creates Stack for TalksApi",
 
 	"Parameters" : {
         "ImageId" : {
@@ -19,7 +19,7 @@
         },
         "OpenRemoteDesktopPort" : {
             "Type" : "String",
-            "Description" : "If set to Yes the RDP port will be open. This is useful for debugging but for security reason should not be done for production systems.",
+            "Description" : "If set to Yes the RDP port will be open.",
             "AllowedValues" : [
                 "Yes",
                 "No"
@@ -37,14 +37,35 @@
         "Route53DNSName" : {
             "Type" : "String",
             "Description" : "public url/DNS value for this component"
+        },
+        "ShouldHaveAccessToDb" : {
+            "Type" : "String",
+            "Description" : "If set to Yes DB security group will be added to stack",
+            "AllowedValues" : [
+                "Yes",
+                "No"
+            ]
+        },
+        "EC2toDBSecurityGroup": {
+            "Type": "String",
+            "Description": "Security Group Name for DB Access",
+            "Default": ""
         }
-	},
+    },
     "Conditions"               : {
         "OpenRemoteDesktopPortCondition" : {
             "Fn::Equals" : [
                 "Yes",
                 {
                     "Ref" : "OpenRemoteDesktopPort"
+                }
+            ]
+        },
+        "HasDbAccess" : {
+            "Fn::Equals" : [
+                "Yes",
+                {
+                    "Ref": "ShouldHaveAccessToDb"
                 }
             ]
         }
@@ -67,25 +88,13 @@
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "The security group for the application servers",
+                "Tags" : [{
+                    "Key" : "SecurityGroupIdentifier",
+                    "Value" : "ec2-speakr-rocks"
+                }],
                 "SecurityGroupIngress" : [
-                    {
-                        "CidrIp" : "0.0.0.0/0",
-                        "IpProtocol" : "tcp",
-                        "FromPort"   : "80",
-                        "ToPort"     : "80"
-                    },
-                    {
-                        "CidrIp" : {
-                            "Fn::If" : [
-                                "OpenRemoteDesktopPortCondition",
-                                "0.0.0.0/0",
-                                "0.0.0.0/32"
-                            ]
-                        },
-                        "IpProtocol" : "tcp",
-                        "FromPort"   : "3389",
-                        "ToPort"     : "3389"
-                    }
+                    {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
+                    {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0"}
                 ]
             }
         },
@@ -203,11 +212,13 @@
                 "KeyName"            : {
                     "Ref" : "EC2KeyName"
                 },
-                "SecurityGroups"     : [
-                    {
-                        "Ref" : "WebServerSecurity"
-                    }
-                ],
+                "SecurityGroups" : [{
+                    "Fn::If" : [
+                        "HasDbAccess",
+                        {"Ref" : "EC2toDBSecurityGroup"},
+                        {"Ref" : "WebServerSecurity"}
+                    ]
+                }],
                 "Tags"               : [
                     {
                         "Key" : "Name",

@@ -1,0 +1,103 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+
+    "Description" : "Creates MySql Database in RDS",
+
+    "Parameters" : {
+        "MasterUsername": {
+            "Type": "String",
+            "Description": "Password to access the DB",
+            "Default": "dbadmin"
+        },
+        "MasterUserPassword": {
+            "Type": "String",
+            "Description": "Password to access the DB"
+        },
+        "InstanceIdentifier": {
+            "Type": "String",
+            "Description": "Name for the cluster",
+            "Default": "db-speakr-rocks"
+        },
+        "InstanceClass": {
+            "Type": "String",
+            "Description": "Name for the cluster",
+            "Default": "db.t2.micro"
+        },
+        "EngineType": {
+            "Type": "String",
+            "Description": "DB Engine",
+            "Default": "mysql"
+        },
+        "Version": {
+            "Type": "String",
+            "Description": "DB Software Version",
+            "Default": "5.7.11"
+        },
+        "AllocatedStorageSize": {
+            "Type": "Number",
+            "Description": "How Many GB is this DB going to be?",
+            "Default": 5
+        },
+        "BackupRetentionPeriod": {
+            "Type": "Number",
+            "Description": "How long to keep backups for?",
+            "Default": 1
+        },
+        "PreferredBackupWindowTimes": {
+            "Type": "String",
+            "Description": "What time to backup, in UTC",
+            "Default": "02:00-05:00"
+        },
+        "PreferredMaintenanceWindowTimes": {
+            "Type": "String",
+            "Description": "What time to backup, in UTC",
+            "Default": "MON:05:00-MON:06:00"
+        }
+    },
+
+    "Resources" : {
+        "DBSpeakrRocks" : {
+            "Type" : "AWS::RDS::DBInstance",
+            "Properties" : {
+                "DBInstanceClass" : { "Ref" : "InstanceClass" },
+                "DBInstanceIdentifier" : { "Ref" : "InstanceIdentifier" },
+                "Engine" : { "Ref" : "EngineType" },
+                "EngineVersion" : { "Ref" : "Version" },
+                "AllocatedStorage" : { "Ref" : "AllocatedStorageSize" },
+                "MasterUsername" : { "Ref" : "MasterUsername" },
+                "MasterUserPassword" : { "Ref" : "MasterUserPassword" },
+                "BackupRetentionPeriod" : { "Ref" : "BackupRetentionPeriod" },
+                "PreferredBackupWindow" : { "Ref" : "PreferredBackupWindowTimes" },
+                "PreferredMaintenanceWindow" : { "Ref" : "PreferredMaintenanceWindowTimes" },
+                "MultiAZ" : false,
+                "DBSecurityGroups" : [{ "Ref" : "DBSecurityGroup" }],
+                "PubliclyAccessible" : false,
+            },
+            "DeletionPolicy" : "Snapshot"
+        },
+
+        "DBSecurityGroup": {
+            "Type": "AWS::RDS::DBSecurityGroup",
+            "Properties": {
+                "DBSecurityGroupIngress": { "EC2SecurityGroupName": { "Ref": "EC2toRDSSecurityGroup"} },
+                "GroupDescription"      : "Frontend Access"
+            }
+        },
+
+        "EC2toRDSSecurityGroup" : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "Tags" : [{
+                    "Key" : "SecurityGroupIdentifier",
+                    "Value" : "ec2-to-db-speakr-rocks"
+                }],
+                "GroupDescription" : "Enable HTTP access via port 80 and SSH access",
+                "SecurityGroupIngress" : [
+                    {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
+                    {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0"}
+                ]
+            }
+        }
+    }
+    
+}
