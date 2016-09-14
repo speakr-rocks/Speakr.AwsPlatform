@@ -25,7 +25,7 @@ Param(
 
     [Parameter()]
     [bool]
-    $hasDbAccess = $true,
+    $hasDbAccess = $false,
 
     [Parameter()]
     [string]
@@ -117,7 +117,7 @@ function _SetupCodeDeployApplication([string]$applicationName,[string]$serviceRo
     if ($existingApplication -ne $null)
     {
         ("CodeDeploy application " + $applicationName + " already existing and is being removed before recreating it")
-        Remove-CDApplication -ApplicationName $applicationName -Force    
+        Remove-CDApplication -ApplicationName $applicationName -Region $region -Force
     }
 
 
@@ -181,8 +181,8 @@ function ProcessInput([string]$instanceType,[string]$keyPair,[bool]$openRDPPort)
 function _GetDbSecurityGroupName
 {
     $secGroupName = (Get-EC2SecurityGroup -Region eu-west-1) | ? {$_.Tag.Key -eq $ec2ToDbSecurityGroupTagKey -and $_.Tag.Value -eq $ec2ToDbSecurityGroupTagValue} | Select GroupName
-    Write-Host "RDS Sec Group Name: " $secGroupName
-    return $secGroupName
+    Write-Host "RDS Sec Group Name: " $secGroupName.GroupName
+    return $secGroupName.GroupName
 }
 
 ProcessInput $instanceType $ec2KeyPair $openRDPPort
