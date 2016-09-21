@@ -52,6 +52,15 @@
             "Type": "String",
             "Description": "What time to backup, in UTC",
             "Default": "MON:05:00-MON:06:00"
+        },
+        "HostedZoneId" : {
+            "Type" : "String",
+            "Description" : "The DNS Id of an existing Amazon Route 53 hosted zone",
+            "Default": "Z34EV4LHVRJO57"
+        },
+        "Route53DNSName" : {
+            "Type" : "String",
+            "Description" : "public url/DNS value for this component"
         }
     },
 
@@ -97,7 +106,19 @@
                     {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0"}
                 ]
             }
-        }
+        },
+
+        "DbSetDnsRecord" : {
+            "Type" : "AWS::Route53::RecordSet",
+            "Properties" : {
+                "HostedZoneId" : {"Ref" : "HostedZoneId"},
+                "Name" : {"Ref" : "Route53DNSName"},
+                "Comment" : "DNS name for the RDS instance",
+                "Type" : "CNAME",
+                "TTL" : "900",
+                "ResourceRecords" : [ { "Fn::GetAtt" : [ "DBSpeakrRocks", "Endpoint.Address" ] } ]
+            }
+        },
     }
     
 }
