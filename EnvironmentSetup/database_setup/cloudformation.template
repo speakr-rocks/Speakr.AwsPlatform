@@ -20,8 +20,13 @@
         },
         "InstanceClass": {
             "Type": "String",
-            "Description": "Name for the cluster",
+            "Description": "Size of machine for the cluster",
             "Default": "db.t2.micro"
+        },
+        "DbName": {
+            "Type": "String",
+            "Description": "Name for the database",
+            "Default": "speakrdb"
         },
         "EngineType": {
             "Type": "String",
@@ -70,6 +75,7 @@
             "Properties" : {
                 "DBInstanceClass" : { "Ref" : "InstanceClass" },
                 "DBInstanceIdentifier" : { "Ref" : "InstanceIdentifier" },
+                "DBName" : { "Ref" : "DbName" },
                 "Engine" : { "Ref" : "EngineType" },
                 "EngineVersion" : { "Ref" : "Version" },
                 "AllocatedStorage" : { "Ref" : "AllocatedStorageSize" },
@@ -119,6 +125,35 @@
                 "ResourceRecords" : [ { "Fn::GetAtt" : [ "DBSpeakrRocks", "Endpoint.Address" ] } ]
             }
         },
+    },
+    "Outputs" : {
+        "DbServer" : {
+            "Description" : "Host address for this RDS Instance",
+            "Value" : { "Ref" : "Route53DNSName"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksServer"
+            }
+        },
+        "DbName" : {
+            "Description" : "Database name for this RDS Instance",
+            "Value" : { "Ref" : "DbName"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksName"
+            }    
+        },
+        "DbUser" : {
+            "Description" : "Username for this RDS Instance",
+            "Value" : { "Ref" : "MasterUsername"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksUser"
+            }
+        },
+        "DbPassword" : {
+            "Description" : "Password for this RDS Instance",
+            "Value" : { "Ref" : "MasterUserPassword"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksPassword"
+            }
+        }
     }
-    
 }
