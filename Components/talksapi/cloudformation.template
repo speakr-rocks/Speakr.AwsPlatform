@@ -168,7 +168,23 @@
                                 "ignoreErrors" : "true",
                                 "waitAfterCompletion" : 0
                             },
-                            "09-signal-ready"        : {
+                            "09-add-environment-variables" : {
+                                "command" : {
+                                    "Fn::Join" : [
+                                        "", 
+                                        [
+                                            "setx SPEAKR_DB_SERVER ", {"Fn::ImportValue" : "DbSpeakrRocksServer"},
+                                            "|",
+                                            "setx SPEAKR_DB_NAME ", {"Fn::ImportValue" : "DbSpeakrRocksName"},
+                                            "|",
+                                            "setx SPEAKR_DB_USER ", {"Fn::ImportValue" : "DbSpeakrRocksUser"},
+                                            "|",
+                                            "setx SPEAKR_DB_PASSWORD ", {"Fn::ImportValue" : "DbSpeakrRocksPassword"}
+                                        ]
+                                    ]
+                                }
+                            },
+                            "10-signal-ready"        : {
                                 "command" : {
                                     "Fn::Join" : [
                                         "",
