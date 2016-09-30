@@ -102,10 +102,6 @@
         "EC2toRDSSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
-                "Tags" : [{
-                    "Key" : "SecurityGroupIdentifier",
-                    "Value" : "ec2-to-db-speakr-rocks"
-                }],
                 "GroupDescription" : "Enable HTTP access via port 80 and SSH access",
                 "SecurityGroupIngress" : [
                     {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
@@ -153,6 +149,13 @@
             "Value" : { "Ref" : "MasterUserPassword"},
             "Export" : {
                 "Name" : "DbSpeakrRocksPassword"
+            }
+        },
+        "EC2toRDSSecurityGroup" : {
+            "Description" : "Security group ID for EC2 instances that require access",
+            "Value" : { "Ref" : "EC2toRDSSecurityGroup" },
+            "Export" : {
+                "Name" : "DbSpeakerRocksEC2SecurityGroupId"
             }
         }
     }

@@ -20,10 +20,7 @@
         "OpenRemoteDesktopPort" : {
             "Type" : "String",
             "Description" : "If set to Yes the RDP port will be open.",
-            "AllowedValues" : [
-                "Yes",
-                "No"
-            ]
+            "AllowedValues" : [ "Yes", "No" ]
         },
         "AppName" : {
             "Type": "String",
@@ -41,15 +38,7 @@
         "ShouldHaveAccessToDb" : {
             "Type" : "String",
             "Description" : "If set to Yes DB security group will be added to stack",
-            "AllowedValues" : [
-                "Yes",
-                "No"
-            ]
-        },
-        "EC2toDBSecurityGroup": {
-            "Type": "String",
-            "Description": "Security Group Name for DB Access",
-            "Default": ""
+            "AllowedValues" : [ "Yes", "No" ]
         }
     },
     "Conditions"               : {
@@ -81,7 +70,7 @@
                 "Handle" : {
                     "Ref" : "WaitHandle"
                 },
-                "Timeout" : "900"
+                "Timeout" : "1800"
             }
         },
         "WebServerSecurity"   : {
@@ -231,8 +220,8 @@
                 "SecurityGroups" : [{
                     "Fn::If" : [
                         "HasDbAccess",
-                        {"Ref" : "EC2toDBSecurityGroup"},
-                        {"Ref" : "WebServerSecurity"}
+                        { "Fn::ImportValue" : "DbSpeakerRocksEC2SecurityGroupId"},
+                        { "Ref" : "WebServerSecurity" }
                     ]
                 }],
                 "Tags"               : [
