@@ -20,10 +20,7 @@
         "OpenRemoteDesktopPort" : {
             "Type" : "String",
             "Description" : "If set to Yes the RDP port will be open.",
-            "AllowedValues" : [
-                "Yes",
-                "No"
-            ]
+            "AllowedValues" : [ "Yes", "No" ]
         },
         "AppName" : {
             "Type": "String",
@@ -41,15 +38,7 @@
         "ShouldHaveAccessToDb" : {
             "Type" : "String",
             "Description" : "If set to Yes DB security group will be added to stack",
-            "AllowedValues" : [
-                "Yes",
-                "No"
-            ]
-        },
-        "EC2toDBSecurityGroup": {
-            "Type": "String",
-            "Description": "Security Group Name for DB Access",
-            "Default": ""
+            "AllowedValues" : [ "Yes", "No" ]
         }
     },
     "Conditions"               : {
@@ -81,7 +70,7 @@
                 "Handle" : {
                     "Ref" : "WaitHandle"
                 },
-                "Timeout" : "900"
+                "Timeout" : "1800"
             }
         },
         "WebServerSecurity"   : {
@@ -168,7 +157,23 @@
                                 "ignoreErrors" : "true",
                                 "waitAfterCompletion" : 0
                             },
-                            "09-signal-ready"        : {
+                            "09-add-environment-variables" : {
+                                "command" : {
+                                    "Fn::Join" : [
+                                        "", 
+                                        [
+                                            "setx SPEAKR_DB_SERVER ", {"Fn::ImportValue" : "DbSpeakrRocksServer"},
+                                            "|",
+                                            "setx SPEAKR_DB_NAME ", {"Fn::ImportValue" : "DbSpeakrRocksName"},
+                                            "|",
+                                            "setx SPEAKR_DB_USER ", {"Fn::ImportValue" : "DbSpeakrRocksUser"},
+                                            "|",
+                                            "setx SPEAKR_DB_PASSWORD ", {"Fn::ImportValue" : "DbSpeakrRocksPassword"}
+                                        ]
+                                    ]
+                                }
+                            },
+                            "10-signal-ready"        : {
                                 "command" : {
                                     "Fn::Join" : [
                                         "",
@@ -215,8 +220,8 @@
                 "SecurityGroups" : [{
                     "Fn::If" : [
                         "HasDbAccess",
-                        {"Ref" : "EC2toDBSecurityGroup"},
-                        {"Ref" : "WebServerSecurity"}
+                        { "Fn::ImportValue" : "DbSpeakerRocksEC2SecurityGroupId"},
+                        { "Ref" : "WebServerSecurity" }
                     ]
                 }],
                 "Tags"               : [

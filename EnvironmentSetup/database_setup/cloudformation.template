@@ -20,8 +20,13 @@
         },
         "InstanceClass": {
             "Type": "String",
-            "Description": "Name for the cluster",
+            "Description": "Size of machine for the cluster",
             "Default": "db.t2.micro"
+        },
+        "DbName": {
+            "Type": "String",
+            "Description": "Name for the database",
+            "Default": "speakrdb"
         },
         "EngineType": {
             "Type": "String",
@@ -70,6 +75,7 @@
             "Properties" : {
                 "DBInstanceClass" : { "Ref" : "InstanceClass" },
                 "DBInstanceIdentifier" : { "Ref" : "InstanceIdentifier" },
+                "DBName" : { "Ref" : "DbName" },
                 "Engine" : { "Ref" : "EngineType" },
                 "EngineVersion" : { "Ref" : "Version" },
                 "AllocatedStorage" : { "Ref" : "AllocatedStorageSize" },
@@ -96,10 +102,6 @@
         "EC2toRDSSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
-                "Tags" : [{
-                    "Key" : "SecurityGroupIdentifier",
-                    "Value" : "ec2-to-db-speakr-rocks"
-                }],
                 "GroupDescription" : "Enable HTTP access via port 80 and SSH access",
                 "SecurityGroupIngress" : [
                     {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
@@ -119,6 +121,42 @@
                 "ResourceRecords" : [ { "Fn::GetAtt" : [ "DBSpeakrRocks", "Endpoint.Address" ] } ]
             }
         },
+    },
+    "Outputs" : {
+        "DbServer" : {
+            "Description" : "Host address for this RDS Instance",
+            "Value" : { "Ref" : "Route53DNSName"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksServer"
+            }
+        },
+        "DbName" : {
+            "Description" : "Database name for this RDS Instance",
+            "Value" : { "Ref" : "DbName"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksName"
+            }    
+        },
+        "DbUser" : {
+            "Description" : "Username for this RDS Instance",
+            "Value" : { "Ref" : "MasterUsername"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksUser"
+            }
+        },
+        "DbPassword" : {
+            "Description" : "Password for this RDS Instance",
+            "Value" : { "Ref" : "MasterUserPassword"},
+            "Export" : {
+                "Name" : "DbSpeakrRocksPassword"
+            }
+        },
+        "EC2toRDSSecurityGroup" : {
+            "Description" : "Security group ID for EC2 instances that require access",
+            "Value" : { "Ref" : "EC2toRDSSecurityGroup" },
+            "Export" : {
+                "Name" : "DbSpeakerRocksEC2SecurityGroupId"
+            }
+        }
     }
-    
 }

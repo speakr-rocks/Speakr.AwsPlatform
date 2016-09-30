@@ -25,15 +25,7 @@ Param(
 
     [Parameter()]
     [bool]
-    $hasDbAccess = $true,
-
-    [Parameter()]
-    [string]
-    $ec2ToDbSecurityGroupTagKey = "SecurityGroupIdentifier",
-
-    [Parameter()]
-    [string]
-    $ec2ToDbSecurityGroupTagValue = "ec2-to-db-speakr-rocks"
+    $hasDbAccess = $true
 )
 
 Import-Module AWSPowerShell
@@ -73,10 +65,6 @@ function _LaunchCloudFormationStack([string]$instanceType, [string]$keyPair, [bo
     $param7 = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
     $param7.ParameterKey = "ShouldHaveAccessToDb" 
 
-    $param8 = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
-    $param8.ParameterKey = "EC2toDBSecurityGroup" 
-    $param8.ParameterValue = _GetDbSecurityGroupName
-
     if ($openRDP) 
     {
         $param4.ParameterValue = "Yes"
@@ -95,7 +83,7 @@ function _LaunchCloudFormationStack([string]$instanceType, [string]$keyPair, [bo
         $param7.ParameterValue = "No"
     }
 
-    $parameters = $param1, $param2, $param3, $param4, $param5, $param6, $param7, $param8
+    $parameters = $param1, $param2, $param3, $param4, $param5, $param6, $param7
 
     $stackId = New-CFNStack -StackName "speakr-$appName" -Capability "CAPABILITY_IAM" -Parameter $parameters -TemplateBody $templateBody -Region $region 
 
@@ -176,13 +164,6 @@ function ProcessInput([string]$instanceType,[string]$keyPair,[bool]$openRDPPort)
     ("CodeDeploy environment setup complete")
     ("AppServer DNS: " + $appServerDNS)
     ("Route53 DNS: "+ $domainName)
-}
-
-function _GetDbSecurityGroupName
-{
-    $secGroupName = (Get-EC2SecurityGroup -Region eu-west-1) | ? {$_.Tag.Key -eq $ec2ToDbSecurityGroupTagKey -and $_.Tag.Value -eq $ec2ToDbSecurityGroupTagValue} | Select GroupName
-    Write-Host "RDS Sec Group Name: " $secGroupName.GroupName
-    return $secGroupName.GroupName
 }
 
 ProcessInput $instanceType $ec2KeyPair $openRDPPort
