@@ -98,7 +98,7 @@
                                     "Fn::Join" : [
                                         "",
                                         [
-                                            "powershell.exe -Command \"((new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?LinkID=809122', 'C:\\cfn\\DotNetCore.1.0.0-SDK.Preview2-x64.exe'))\""
+                                            "powershell.exe -Command \"((new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?LinkID=827524', 'C:\\cfn\\DotNetCore.1.0.0-SDK.Preview2-x64.exe'))\""
                                         ]
                                     ]
                                 },
