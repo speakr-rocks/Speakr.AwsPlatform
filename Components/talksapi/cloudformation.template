@@ -163,11 +163,11 @@
                                         "", 
                                         [
                                             "setx SPEAKR_DB_SERVER ", {"Fn::ImportValue" : "DbSpeakrRocksServer"},
-                                            "|",
+                                            " /M |",
                                             "setx SPEAKR_DB_NAME ", {"Fn::ImportValue" : "DbSpeakrRocksName"},
-                                            "|",
+                                            " /M |",
                                             "setx SPEAKR_DB_USER ", {"Fn::ImportValue" : "DbSpeakrRocksUser"},
-                                            "|",
+                                            " /M |",
                                             "setx SPEAKR_DB_PASSWORD ", {"Fn::ImportValue" : "DbSpeakrRocksPassword"}
                                         ]
                                     ]

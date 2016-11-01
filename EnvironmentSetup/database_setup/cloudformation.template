@@ -1,7 +1,7 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
 
-    "Description" : "Creates MySql Database in RDS",
+    "Description" : "Creates Stack for speakrdb RDS Cluster",
 
     "Parameters" : {
         "MasterUsername": {
