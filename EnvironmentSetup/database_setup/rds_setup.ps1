@@ -5,7 +5,7 @@ Param(
 
     [Parameter()]
     [string]
-    $route53DnsName = "db.speakr.rocks."
+    $route53DnsName = "db.speakr.rocks"
 )
 
 Import-Module AWSPowerShell
