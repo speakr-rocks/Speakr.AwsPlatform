@@ -125,8 +125,11 @@
                                     "Fn::Join" : [
                                         "",
                                         [
-                                            "powershell.exe -Command \"Read-S3Object ",
-                                            "-BucketName aws-codedeploy-us-east-1 ",
+                                            "powershell.exe ",
+                                            "Set-ExecutionPolicy RemoteSigned; ",
+                                            "Import-Module AWSPowerShell; ",
+                                            "\"Read-S3Object ",
+                                            "-BucketName aws-codedeploy-eu-west-1 ",
                                             "-Key latest/codedeploy-agent.msi ",
                                             "-File codedeploy-agent.msi\""
                                         ]
