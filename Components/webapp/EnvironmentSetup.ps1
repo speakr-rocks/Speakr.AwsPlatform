@@ -37,7 +37,7 @@ function _LaunchCloudFormationStack([string]$instanceType, [string]$keyPair, [bo
     $templatePath = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "./cloudformation.template"))
     $templateBody = [System.IO.File]::ReadAllText($templatePath)
 
-    $imageId = "ami-55084526"
+    $imageId = "ami-dd9eb6ae"
 
     $param1 = New-Object  -TypeName Amazon.CloudFormation.Model.Parameter
     $param1.ParameterKey = "ImageId"
