@@ -98,7 +98,7 @@
                                     "Fn::Join" : [
                                         "",
                                         [
-                                            "powershell.exe -Command \"((new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?LinkID=827524', 'C:\\cfn\\DotNetCore.1.0.0-SDK.Preview2-x64.exe'))\""
+                                            "powershell.exe -Command \"((new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?linkid=843448', 'C:\\cfn\\dotnet-dev-win-x64.1.0.1.exe '))\""
                                         ]
                                     ]
                                 },
@@ -106,7 +106,7 @@
                                 "waitAfterCompletion" : 0
                             },
                             "02-install-dotnetcli"  : {
-                                "command" : "C:\\cfn\\DotNetCore.1.0.0-SDK.Preview2-x64.exe /install /quiet /log C:\\cfn\\DotNetCore.1.0.0-SDK.Preview2-x64.txt",
+                                "command" : "C:\\cfn\\dotnet-dev-win-x64.1.0.1.exe  /install /quiet /log C:\\cfn\\dotnet-dev-win-x64.1.0.1.txt",
                                 "ignoreErrors" : "true",
                                 "waitAfterCompletion" : 0
                             },
@@ -128,10 +128,10 @@
                                             "powershell.exe ",
                                             "Set-ExecutionPolicy RemoteSigned; ",
                                             "Import-Module AWSPowerShell; ",
-                                            "\"Read-S3Object ",
+                                            "Read-S3Object ",
                                             "-BucketName aws-codedeploy-eu-west-1 ",
                                             "-Key latest/codedeploy-agent.msi ",
-                                            "-File codedeploy-agent.msi\""
+                                            "-File codedeploy-agent.msi"
                                         ]
                                     ]
                                 },
@@ -148,7 +148,7 @@
                                     "Fn::Join" : [
                                         "",
                                         [
-                                            "powershell.exe -Command \"((new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?LinkId=817246', 'C:\\cfn\\DotNetCore.1.0.0-WindowsHosting.exe'))\""
+                                            "powershell.exe -Command \"((new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?linkid=844461', 'C:\\cfn\\DotNetCore.1.0.4_1.1.1-WindowsHosting.exe'))\""
                                         ]
                                     ]
                                 },
@@ -156,20 +156,23 @@
                                 "waitAfterCompletion" : 0
                             },
                             "08-install-dotnet-hosting"  : {
-                                "command" : "C:\\cfn\\DotNetCore.1.0.0-WindowsHosting.exe /install /quiet /log C:\\cfn\\DotNetCore.1.0.0-WindowsHosting.txt",
+                                "command" : "C:\\cfn\\DotNetCore.1.0.4_1.1.1-WindowsHosting.exe /install /quiet /log C:\\cfn\\DotNetCore.1.0.4_1.1.1-WindowsHosting.txt",
                                 "ignoreErrors" : "true",
                                 "waitAfterCompletion" : 0
                             },
                             "09-add-environment-variables" : {
                                 "command" : {
-                                    "Fn::Join" : [
-                                        "", 
-                                        [
-                                            "setx SPEAKR_DB_SERVER ", {"Fn::ImportValue" : "DbSpeakrRocksServer"}, " /M |",
-                                            "setx SPEAKR_DB_NAME ", {"Fn::ImportValue" : "DbSpeakrRocksName"}, " /M |",
-                                            "setx SPEAKR_DB_USER ", {"Fn::ImportValue" : "DbSpeakrRocksUser"}, " /M |",
-                                            "setx SPEAKR_DB_PASSWORD ", {"Fn::ImportValue" : "DbSpeakrRocksPassword"}, " /M"
-                                        ]
+                                    "Fn::If" : [
+                                        "HasDbAccess",
+                                        { 
+                                            "Fn::Join" : [ "", [
+                                                "setx SPEAKR_DB_SERVER ", {"Fn::ImportValue" : "DbSpeakrRocksServer"}, " /M |",
+                                                "setx SPEAKR_DB_NAME ", {"Fn::ImportValue" : "DbSpeakrRocksName"}, " /M |",
+                                                "setx SPEAKR_DB_USER ", {"Fn::ImportValue" : "DbSpeakrRocksUser"}, " /M |",
+                                                "setx SPEAKR_DB_PASSWORD ", {"Fn::ImportValue" : "DbSpeakrRocksPassword"}, " /M"
+                                            ]
+                                        ]},
+                                        { "Fn::Join" : ["", [""]] }
                                     ]
                                 }
                             },
